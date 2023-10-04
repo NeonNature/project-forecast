@@ -34,3 +34,10 @@ export interface ForecastDetails {
   temperature: number;
   description: string;
 }
+
+export interface ForecastCardProps {
+  time: string;
+  icon: string;
+  temperature: number;
+  description: string;
+}

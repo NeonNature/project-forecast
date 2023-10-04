@@ -117,8 +117,8 @@ function App() {
   };
 
   const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
     if (e.key === 'Enter') {
+      e.preventDefault();
       searchCountry();
     }
   };
