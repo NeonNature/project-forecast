@@ -17,7 +17,7 @@ function App() {
   const [timeList, setTimeList] = useState<ForecastDetails[]>([]);
   const [dayList, setDayList] = useState<ForecastDetails[]>([]);
 
-  const getWeatherDetails = (cityName: string, latitude: number, longitude: number) => {
+  const getWeatherDetails = (latitude: number, longitude: number) => {
     const WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
 
     fetch(WEATHER_API_URL)
@@ -43,6 +43,7 @@ function App() {
               temperature: list.main.temp,
               time: list.dt_txt.split(' ')?.[0],
               icon: list.weather?.[0]?.icon,
+              description: list.weather?.[0]?.description,
             });
           }
 
@@ -50,6 +51,7 @@ function App() {
             tempTimeList.push({
               temperature: list.main.temp,
               time: list.dt_txt.split(' ')?.[1],
+              description: list.weather?.[0]?.description,
               icon: list.weather?.[0]?.icon,
             });
           }
@@ -70,9 +72,8 @@ function App() {
         const API_URL = `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${API_KEY}`;
         fetch(API_URL)
           .then((response) => response.json())
-          .then((data) => {
-            const { name } = data[0];
-            getWeatherDetails(name, latitude, longitude);
+          .then(() => {
+            getWeatherDetails(latitude, longitude);
           })
           .catch(() => {
             alert('An error occurred while fetching the city name!');
@@ -100,8 +101,8 @@ function App() {
       .then((response) => response.json())
       .then((data: Array<GeolocationResponse>) => {
         if (!data.length) return alert(`No coordinates found for ${search}`);
-        const { lat, lon, name } = data[0];
-        getWeatherDetails(name, lat, lon);
+        const { lat, lon } = data[0];
+        getWeatherDetails(lat, lon);
       })
       .catch(() => {
         alert('An error occurred while fetching the coordinates!');

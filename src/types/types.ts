@@ -1,4 +1,5 @@
 export interface WeatherDetail {
+  description: string;
   main: string;
   icon: string;
 }
@@ -31,4 +32,5 @@ export interface ForecastDetails {
   time: string;
   icon: string;
   temperature: number;
+  description: string;
 }
