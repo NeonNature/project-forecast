@@ -10,8 +10,14 @@ interface TimeForecastProps {
 const TimeForecast = ({ forecast }: TimeForecastProps) => {
   const forecastList: React.ReactElement[] = useMemo(
     () =>
-      forecast.map(({ time, temperature, icon }: ForecastDetails, index: number) => (
-        <TimeForecastCard key={index.toLocaleString()} time={time} icon={icon} temperature={temperature} />
+      forecast.map(({ time, temperature, icon, description }: ForecastDetails, index: number) => (
+        <TimeForecastCard
+          key={index.toLocaleString()}
+          time={time}
+          icon={icon}
+          temperature={temperature}
+          description={description}
+        />
       )),
     [forecast],
   );
