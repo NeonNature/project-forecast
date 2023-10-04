@@ -1,27 +1,45 @@
-# React + TypeScript + Vite
+# Project Forecast
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## _Weather Forecast App_
 
-Currently, two official plugins are available:
+Project Forecast is a weather forecast app developed using React + Vite and OpenWeatherMap
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Search a location to check upcoming weather forecasts
+- View weather forecast of current user using geolocation.
+- Weather Forecasts are currently limited to five days for now.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Tech
 
-- Configure the top-level `parserOptions` property like this:
+- [React]
+- [Typescript]
+- [Vite] - to initate faster
+- [OpenWeatherMap] - to get weather forecast data
+- [Prettier] - for code formatting
+- [ESLint] - for code formatting
+- [Tailwind] - for styles
+- [Vercel] - for deployment
+-
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+## Installation
+
+Please make sure you have the latest [Node.js](https://nodejs.org/) or at least v10+ to avoid potential issues.
+
+Install the dependencies and devDependencies and start the server.
+
+```sh
+cd project-forecast
+npm i
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Verify by navigating to your server address in your preferred browser.
+
+```sh
+http://localhost:5173/
+```
+
+## Important Note
+
+You will need to create a `.env` file at the root of the directory with `VITE_API_KEY` with your corresponding OpenWeatherMap API Key.

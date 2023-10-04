@@ -13,7 +13,7 @@ const DayForecast = ({ forecast }: DayForecastProps) => {
       forecast.map(({ time, temperature, icon, description }: ForecastDetails, index: number) => (
         <DayForecastCard
           key={index.toLocaleString()}
-          time={time}
+          time={index === 0 ? 'Today' : time}
           icon={icon}
           temperature={temperature}
           description={description}
@@ -21,7 +21,7 @@ const DayForecast = ({ forecast }: DayForecastProps) => {
       )),
     [forecast],
   );
-  return <div className="forecast-container">{forecastList}</div>;
+  return <div className="forecast-container grid grid-cols-3 md:grid-cols-6">{forecastList}</div>;
 };
 
 export default DayForecast;

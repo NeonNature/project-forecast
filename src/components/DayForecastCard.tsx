@@ -9,7 +9,7 @@ interface DayForecastCardProps {
 }
 
 const DayForecastCard: React.FC<DayForecastCardProps> = ({ time, icon, temperature, description }) => {
-  const displayTime = time.substring(0, 5).replace('-', '/');
+  const displayTime = time !== 'Today' ? time.substring(5).replace('-', '/') : time;
   return (
     <div className="forecast-card">
       <p>{displayTime}</p>

@@ -4,6 +4,7 @@ import DayForecast from './components/DayForecast';
 import CurrentForecast from './components/CurrentForecast';
 import TimeForecast from './components/TimeForecast';
 import { ForecastDetails, WeatherResponse, GeolocationResponse } from './types/types.ts';
+import Loading from './components/Loading.tsx';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -16,6 +17,7 @@ function App() {
   const [search, setSearch] = useState<string>('');
   const [timeList, setTimeList] = useState<ForecastDetails[]>([]);
   const [dayList, setDayList] = useState<ForecastDetails[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getWeatherDetails = (latitude: number, longitude: number) => {
     const WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
@@ -23,7 +25,7 @@ function App() {
     fetch(WEATHER_API_URL)
       .then((response) => response.json())
       .then((data: WeatherResponse) => {
-        console.log(data);
+        setLoading(false);
 
         setCity(data?.city?.name);
         setCountry(data?.city?.country);
@@ -123,33 +125,42 @@ function App() {
 
   return (
     <div className={`page-container`}>
-      <div>
-        <div className="mb-4">
-          <input
-            type="search"
-            placeholder="Search Location"
-            onChange={(e) => handleChange(e)}
-            onKeyDown={(e) => handleSubmit(e)}
-            value={search}
-            className="search-input"
-          />
-          <button onClick={() => searchCountry()} type="button" className="search-btn" disabled={search.trim() === ''}>
-            Search
-          </button>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="page-content">
+          <div className="mb-4">
+            <input
+              type="search"
+              placeholder="Search Location"
+              onChange={(e) => handleChange(e)}
+              onKeyDown={(e) => handleSubmit(e)}
+              value={search}
+              className="search-input"
+            />
+            <button
+              onClick={() => searchCountry()}
+              type="button"
+              className="search-btn"
+              disabled={search.trim() === ''}
+            >
+              Search
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            <CurrentForecast
+              city={city}
+              country={country}
+              weather={weather}
+              temperature={temperature}
+              weatherIcon={weatherIcon}
+            />
+            <TimeForecast forecast={timeList} />
+          </div>
+          <hr className="my-4" />
+          <DayForecast forecast={dayList} />
         </div>
-        <div className="grid grid-cols-2">
-          <CurrentForecast
-            city={city}
-            country={country}
-            weather={weather}
-            temperature={temperature}
-            weatherIcon={weatherIcon}
-          />
-          <TimeForecast forecast={timeList} />
-        </div>
-        <hr className="my-4" />
-        <DayForecast forecast={dayList} />
-      </div>
+      )}
     </div>
   );
 }
