@@ -10,7 +10,7 @@ interface CurrentForecastProps {
 
 const CurrentForecast: React.FC<CurrentForecastProps> = ({ city, country, weatherIcon, temperature, weather }) => {
   return (
-    <div className="current-forecast-container">
+    <div className="flex flex-col items-center justify-center">
       <p>
         {city}, {country}
       </p>

@@ -27,12 +27,20 @@ interface WeatherResponse {
   list: Array<WeatherResponseList>;
 }
 
+interface GeolocationResponse {
+  lat: number;
+  lon: number;
+  name: string;
+}
+
 function App() {
-  const [city, setCity] = useState<string>('');
-  const [country, setCountry] = useState<string>('');
-  const [weatherIcon, setWeatherIcon] = useState<string>('');
-  const [weather, setWeather] = useState<string>('');
-  const [temperature, setTemperature] = useState<number>(0);
+  const [city, setCity] = useState<string>('Yangon');
+  const [country, setCountry] = useState<string>('MM');
+  const [weatherIcon, setWeatherIcon] = useState<string>('01d');
+  const [weather, setWeather] = useState<string>('Clear');
+  const [temperature, setTemperature] = useState<number>(273);
+  const [background, setBackground] = useState<string>('clouds');
+  const [search, setSearch] = useState<string>('');
 
   const getWeatherDetails = (cityName: string, latitude: number, longitude: number) => {
     const WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
@@ -79,24 +87,58 @@ function App() {
   };
 
   useEffect(() => {
-    getUserLocation();
+    // getUserLocation();
   });
 
+  const searchCountry = () => {
+    const API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=1&appid=${API_KEY}`;
+
+    fetch(API_URL)
+      .then((response) => response.json())
+      .then((data: Array<GeolocationResponse>) => {
+        if (!data.length) return alert(`No coordinates found for ${search}`);
+        const { lat, lon, name } = data[0];
+        getWeatherDetails(name, lat, lon);
+      })
+      .catch(() => {
+        alert('An error occurred while fetching the coordinates!');
+      });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+
   return (
-    <>
-      <div className="grid grid-cols-2">
-        <CurrentForecast
-          city={city}
-          country={country}
-          weather={weather}
-          temperature={temperature}
-          weatherIcon={weatherIcon}
-        />
-        <TimeForecast />
+    <div className={`page-container ${background}`}>
+      <div>
+        <div className="mb-4">
+          <input
+            type="search"
+            placeholder="Search Location"
+            onChange={handleChange}
+            value={search}
+            className="search-input"
+          />
+          <button onClick={searchCountry} type="button" className="search-btn" disabled={search.trim() === ''}>
+            Search
+          </button>
+        </div>
+        <div className="grid grid-cols-2">
+          <CurrentForecast
+            city={city}
+            country={country}
+            weather={weather}
+            temperature={temperature}
+            weatherIcon={weatherIcon}
+          />
+          <TimeForecast />
+        </div>
+        <hr className="my-4" />
+        <DayForecast />
       </div>
-      <hr />
-      <DayForecast />
-    </>
+    </div>
   );
 }
 

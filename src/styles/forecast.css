@@ -12,8 +12,11 @@
   display: flex;
   gap: 10px;
   flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-.current-forecast-container {
-  width: 50%;
+.time-forecast-container img {
+  max-width: 50px;
+  height: 100%;
 }
