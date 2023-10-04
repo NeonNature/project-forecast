@@ -1,10 +1,9 @@
-import './App.css'
+import '../styles/forecast.css'
 
-function App() {
-
+const Forecast = () => {
 
   return (
-    <>
+    <div className="forecast-container">
       <div>
         <p>Yangon, Myanmar</p>
         <p>Some image goes here</p>
@@ -47,8 +46,8 @@ function App() {
         <p>Some image goes here</p>
         <p>22/16</p>
       </div>
-    </>
+    </div>
   )
 }
 
-export default App
+export default Forecast
