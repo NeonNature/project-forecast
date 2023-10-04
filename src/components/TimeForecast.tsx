@@ -1,16 +1,21 @@
+import { useMemo } from 'react';
 import '../styles/forecast.css';
 import TimeForecastCard from './TimeForecastCard';
+import { ForecastDetails } from '../types/types';
 
-const TimeForecast = () => {
-  return (
-    <div className="time-forecast-container">
-      <TimeForecastCard time="Sun" icon="01d" temperature="66 C" forecast="Sunny" />
-      <TimeForecastCard time="Sun" icon="01d" temperature="66 C" forecast="Sunny" />
-      <TimeForecastCard time="Sun" icon="01d" temperature="66 C" forecast="Sunny" />
-      <TimeForecastCard time="Sun" icon="01d" temperature="66 C" forecast="Sunny" />
-      <TimeForecastCard time="Sun" icon="01d" temperature="66 C" forecast="Sunny" />
-    </div>
+interface TimeForecastProps {
+  forecast: ForecastDetails[];
+}
+
+const TimeForecast = ({ forecast }: TimeForecastProps) => {
+  const forecastList: React.ReactElement[] = useMemo(
+    () =>
+      forecast.map(({ time, temperature, icon }: ForecastDetails, index: number) => (
+        <TimeForecastCard key={index.toLocaleString()} time={time} icon={icon} temperature={temperature} />
+      )),
+    [forecast],
   );
+  return <div className="time-forecast-container">{forecastList}</div>;
 };
 
 export default TimeForecast;

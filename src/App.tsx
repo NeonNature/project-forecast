@@ -3,35 +3,9 @@ import './App.css';
 import DayForecast from './components/DayForecast';
 import CurrentForecast from './components/CurrentForecast';
 import TimeForecast from './components/TimeForecast';
+import { ForecastDetails, WeatherResponse, GeolocationResponse } from './types/types.ts';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
-
-interface WeatherDetail {
-  main: string;
-  icon: string;
-}
-
-interface TemperatureDetail {
-  temp: number;
-}
-
-interface WeatherResponseList {
-  weather: Array<WeatherDetail>;
-  main: TemperatureDetail;
-}
-interface WeatherResponse {
-  city: {
-    name: string;
-    country: string;
-  };
-  list: Array<WeatherResponseList>;
-}
-
-interface GeolocationResponse {
-  lat: number;
-  lon: number;
-  name: string;
-}
 
 function App() {
   const [city, setCity] = useState<string>('Yangon');
@@ -39,8 +13,9 @@ function App() {
   const [weatherIcon, setWeatherIcon] = useState<string>('01d');
   const [weather, setWeather] = useState<string>('Clear');
   const [temperature, setTemperature] = useState<number>(273);
-  const [background, setBackground] = useState<string>('clouds');
   const [search, setSearch] = useState<string>('');
+  const [timeList, setTimeList] = useState<ForecastDetails[]>([]);
+  const [dayList, setDayList] = useState<ForecastDetails[]>([]);
 
   const getWeatherDetails = (cityName: string, latitude: number, longitude: number) => {
     const WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
@@ -55,6 +30,33 @@ function App() {
         setWeatherIcon(data?.list?.[0]?.weather?.[0]?.icon);
         setWeather(data?.list?.[0]?.weather?.[0]?.main);
         setTemperature(data?.list?.[0]?.main?.temp);
+
+        const tempList: Array<string> = [];
+        const tempDayList: Array<ForecastDetails> = [];
+        const tempTimeList: Array<ForecastDetails> = [];
+
+        data?.list?.forEach((list) => {
+          const day = list.dt_txt.split(' ')?.[0];
+          if (!tempList.includes(day)) {
+            tempList.push(day);
+            tempDayList.push({
+              temperature: list.main.temp,
+              time: list.dt_txt.split(' ')?.[0],
+              icon: list.weather?.[0]?.icon,
+            });
+          }
+
+          if (tempList.length < 2) {
+            tempTimeList.push({
+              temperature: list.main.temp,
+              time: list.dt_txt.split(' ')?.[1],
+              icon: list.weather?.[0]?.icon,
+            });
+          }
+        });
+
+        setTimeList(tempTimeList);
+        setDayList(tempDayList);
       })
       .catch(() => {
         alert('An error occurred while fetching the weather forecast!');
@@ -87,11 +89,12 @@ function App() {
   };
 
   useEffect(() => {
-    // getUserLocation();
-  });
+    getUserLocation();
+  }, []);
 
   const searchCountry = () => {
     const API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=1&appid=${API_KEY}`;
+    setSearch('');
 
     fetch(API_URL)
       .then((response) => response.json())
@@ -110,18 +113,26 @@ function App() {
     setSearch(e.target.value);
   };
 
+  const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.key === 'Enter') {
+      searchCountry();
+    }
+  };
+
   return (
-    <div className={`page-container ${background}`}>
+    <div className={`page-container`}>
       <div>
         <div className="mb-4">
           <input
             type="search"
             placeholder="Search Location"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
+            onKeyDown={(e) => handleSubmit(e)}
             value={search}
             className="search-input"
           />
-          <button onClick={searchCountry} type="button" className="search-btn" disabled={search.trim() === ''}>
+          <button onClick={() => searchCountry()} type="button" className="search-btn" disabled={search.trim() === ''}>
             Search
           </button>
         </div>
@@ -133,10 +144,10 @@ function App() {
             temperature={temperature}
             weatherIcon={weatherIcon}
           />
-          <TimeForecast />
+          <TimeForecast forecast={timeList} />
         </div>
         <hr className="my-4" />
-        <DayForecast />
+        <DayForecast forecast={dayList} />
       </div>
     </div>
   );

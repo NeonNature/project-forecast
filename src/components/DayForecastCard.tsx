@@ -3,17 +3,16 @@ import '../styles/forecast.css';
 interface DayForecastCardProps {
   time: string;
   icon: string;
-  temperature: string;
-  forecast: string;
+  temperature: number;
 }
 
-const DayForecastCard: React.FC<DayForecastCardProps> = ({ time, icon, temperature, forecast }) => {
+const DayForecastCard: React.FC<DayForecastCardProps> = ({ time, icon, temperature }) => {
+  const displayTime = time.slice(0, 4).replace('-', '/');
   return (
     <div className="forecast-card">
-      <p>{time}</p>
+      <p>{displayTime}</p>
       <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="" />
-      <p>{temperature}</p>
-      <p>{forecast}</p>
+      <p>{`${(temperature - 273.15).toFixed(0)} °C`}</p>
     </div>
   );
 };
